@@ -1,18 +1,20 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import rc
+from matplotlib import font_manager, rc
 import platform
-import koreanize_matplotlib
 
-# 한글 폰트 자동 설정
+# 한글 폰트 설정
 def set_font():
     if platform.system() == 'Windows':
-        rc('font', family='Malgun Gothic')  # Windows 기본 한글 폰트
+        font_path = "C:/Windows/Fonts/malgun.ttf"  # Windows용 폰트
     elif platform.system() == 'Darwin':
-        rc('font', family='AppleGothic')  # Mac 기본 한글 폰트
+        font_path = "/System/Library/Fonts/Supplemental/AppleGothic.ttf"  # Mac용 폰트
     else:
-        rc('font', family='NanumGothic')  # Linux 기본 폰트 (NanumGothic)
+        font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # Linux용 폰트
+
+    font_name = font_manager.FontProperties(fname=font_path).get_name()
+    rc('font', family=font_name)
 
 set_font()
 
