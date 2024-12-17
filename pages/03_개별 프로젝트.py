@@ -1,57 +1,38 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib import rc, font_manager
-
-# 한글 폰트 동적 설정
-def set_font():
-    font_candidates = ["Malgun Gothic", "AppleGothic", "NanumGothic"]
-    available_fonts = set([f.name for f in font_manager.fontManager.ttflist])
-
-    for font in font_candidates:
-        if font in available_fonts:
-            rc('font', family=font)
-            break
-    else:
-        st.warning("한글 폰트를 찾을 수 없습니다. 기본 설정으로 진행합니다.")
-
-set_font()
 
 # 데이터 불러오기
 @st.cache_data
 def load_data():
-    file_path = "age2411.csv"  # 업로드된 파일 경로
-    data = pd.read_csv(file_path)
+    data = pd.read_csv("2024book50.csv")
     return data
 
 data = load_data()
 
-# 제목 및 설명
-st.title("📊 동별 고등학생 인구 현황 시각화")
-st.write("특정 '구'를 입력하면 해당 '구'의 동별 고등학생 인구 수를 보여줍니다.")
+# 제목과 설명
+st.title("\U0001F4DA 고등학생 도서 추천 프로그램 \U0001F4DA")
+st.write("\U0001F9E0 자신의 **진로와 관심분야**를 입력하면 맞춤 도서를 추천해드립니다!")
 
-# 고등학생 연령대 컬럼 추출
-high_school_columns = ['2024년11월_계_15세', '2024년11월_계_16세', '2024년11월_계_17세', '2024년11월_계_18세']
-data['고등학생인구'] = data[high_school_columns].sum(axis=1)
+# 사용자 입력
+interest = st.text_input("\U0001F4DD 관심 분야나 진로를 입력해보세요 (예: 과학, 문학, 심리학 등)")
 
-# 시각화 대상 지역 입력
-input_region = st.text_input("구 이름을 입력하세요 (예: 서울특별시 종로구):")
+# 데이터 추천 필터링
+def recommend_books(data, keyword):
+    filtered = data[data.apply(lambda row: keyword.lower() in str(row.values).lower(), axis=1)]
+    return filtered
 
-if input_region:
-    # 입력한 '구'에 해당하는 '동' 데이터 필터링
-    filtered_data = data[data['행정구역'].str.contains(input_region) & data['행정구역'].str.contains("동")]
-
-    if not filtered_data.empty:
-        # 정렬
-        sorted_data = filtered_data[['행정구역', '고등학생인구']].sort_values(by='고등학생인구', ascending=False)
-
-        # 시각화
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.barh(sorted_data['행정구역'], sorted_data['고등학생인구'], color='skyblue')
-        ax.set_title(f"{input_region} 동별 고등학생 인구 현황")
-        ax.set_xlabel("고등학생 인구 수")
-        ax.set_ylabel("행정구역 (동)")
-        plt.gca().invert_yaxis()  # 큰 값이 위에 오도록 설정
-        st.pyplot(fig)
+if interest:
+    recommendations = recommend_books(data, interest)
+    
+    if not recommendations.empty:
+        st.subheader("\U0001F4A1 추천 도서")
+        for index, row in recommendations.iterrows():
+            st.write(f"**\U0001F4D6 {row['도서명']}**")
+            st.write(f"- \U0001F4DA 저자: {row['저자']}")
+            st.write(f"- \U0001F30F 출판사: {row['출판사']}")
+            st.write(f"- \U0001F4AC 주제어: {row['주제어']}")
+            st.write("---")
     else:
-        st.error("입력한 구에 해당하는 동이 존재하지 않습니다. 다시 확인해 주세요.")
+        st.warning("\U0001F615 해당 관심 분야에 대한 추천 도서가 없습니다. 다른 키워드를 입력해보세요!")
+else:
+    st.info("\U0001F50D 진로와 관심 분야를 입력하고 추천 도서를 확인해보세요!")
