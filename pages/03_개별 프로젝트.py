@@ -1,20 +1,19 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import font_manager, rc
-import platform
+from matplotlib import rc, font_manager
 
-# 한글 폰트 설정
+# 한글 폰트 동적 설정
 def set_font():
-    if platform.system() == 'Windows':
-        font_path = "C:/Windows/Fonts/malgun.ttf"  # Windows용 폰트
-    elif platform.system() == 'Darwin':
-        font_path = "/System/Library/Fonts/Supplemental/AppleGothic.ttf"  # Mac용 폰트
-    else:
-        font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # Linux용 폰트
+    font_candidates = ["Malgun Gothic", "AppleGothic", "NanumGothic"]
+    available_fonts = set([f.name for f in font_manager.fontManager.ttflist])
 
-    font_name = font_manager.FontProperties(fname=font_path).get_name()
-    rc('font', family=font_name)
+    for font in font_candidates:
+        if font in available_fonts:
+            rc('font', family=font)
+            break
+    else:
+        st.warning("한글 폰트를 찾을 수 없습니다. 기본 설정으로 진행합니다.")
 
 set_font()
 
