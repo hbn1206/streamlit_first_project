@@ -1,13 +1,19 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-# import koreanize_matplotlib
-from matplotlib import font_manager, rc
+from matplotlib import rc
+import platform
 
-# 한글 폰트 설정
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # 폰트 경로 설정 (리눅스 예시)
-font_name = font_manager.FontProperties(fname=font_path).get_name()
-rc('font', family=font_name)
+# 한글 폰트 자동 설정
+def set_font():
+    if platform.system() == 'Windows':
+        rc('font', family='Malgun Gothic')  # Windows 기본 한글 폰트
+    elif platform.system() == 'Darwin':
+        rc('font', family='AppleGothic')  # Mac 기본 한글 폰트
+    else:
+        rc('font', family='DejaVu Sans')  # Linux 기본 폰트 (한글 지원)
+
+set_font()
 
 # 데이터 불러오기
 @st.cache_data
