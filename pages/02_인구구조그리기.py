@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import koreanize_matplotlib
+# import koreanize_matplotlib
 from matplotlib import font_manager, rc
 
 # 한글 폰트 설정
