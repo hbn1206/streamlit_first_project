@@ -26,7 +26,7 @@ data = load_data()
 
 # 제목 및 설명
 st.title("📊 지역별 인구 구조 시각화")
-st.write("원하는 지역의 이름을 입력하면 해당 지역의 연령대별 인구 구조를 그래프로 보여줍니다.")
+st.write("원하는 지역의 이름을 입력하면 해당 지역의 연령대별 인구 구조를 꺾은선 그래프로 보여줍니다.")
 
 # 지역 입력창
 input_region = st.text_input("지역명을 입력하세요 (예: 서울특별시 종로구):")
@@ -43,9 +43,9 @@ if input_region:
         age_data = filtered_data[age_columns].iloc[0].T
         age_data.index = [col.split('_')[-1] for col in age_columns]  # 연령대 이름 추출
 
-        # 그래프 시각화
+        # 그래프 시각화 (꺾은선 그래프)
         fig, ax = plt.subplots(figsize=(10, 6))
-        age_data.plot(kind='bar', ax=ax, color='skyblue')
+        ax.plot(age_data.index, age_data.values, marker='o', linestyle='-', color='blue')
         ax.set_title(f"{input_region} 연령대별 인구 구조")
         ax.set_xlabel("연령대")
         ax.set_ylabel("인구 수")
