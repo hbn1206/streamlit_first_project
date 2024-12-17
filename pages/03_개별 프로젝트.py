@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import rc
 import platform
+import koreanize_matplotlib
 
 # 한글 폰트 자동 설정
 def set_font():
